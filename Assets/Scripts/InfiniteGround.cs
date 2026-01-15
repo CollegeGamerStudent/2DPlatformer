@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class InfiniteGround : MonoBehaviour
 {
@@ -7,21 +7,24 @@ public class InfiniteGround : MonoBehaviour
 
     void Start()
     {
-        // Auto-detect ground width if not set
         if (groundWidth == 0)
-        {
             groundWidth = GetComponent<SpriteRenderer>().bounds.size.x;
-        }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    void Update()
     {
-        RepositionGround(); Debug.Log("repositioning ground");
-    }
-    void RepositionGround()
-    {
-        Vector3 newPosition = transform.position;
-        newPosition.x += groundWidth * 2; // number of tiles in scene
-        transform.position = newPosition;
+        float camX = cameraTransform.position.x;
+
+        // ground too far left → move right
+        if (transform.position.x < camX - groundWidth)
+        {
+            transform.position += Vector3.right * groundWidth * 2f;
+        }
+
+        // ground too far right → move left
+        if (transform.position.x > camX + groundWidth)
+        {
+            transform.position += Vector3.left * groundWidth * 2f;
+        }
     }
 }
